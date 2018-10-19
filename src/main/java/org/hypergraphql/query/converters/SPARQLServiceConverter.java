@@ -73,7 +73,7 @@ public class SPARQLServiceConverter {
         String urisConcat = String.join(" ", uris);
         return String.format(PATTERN, urisConcat);
     }
-    
+
     private String limitOffsetSTR(JsonNode jsonQuery) {
         JsonNode args = jsonQuery.get("args");
         String limitSTR = "";
@@ -148,7 +148,7 @@ public class SPARQLServiceConverter {
         String graphID = ((SPARQLEndpointService) schema.getQueryFields().get(queryField.get("name").asText()).service()).getGraph();
         String nodeId = queryField.get("nodeId").asText();
         String selectTriple = tripleSTR(varSTR(nodeId), RDF_TYPE_URI, uriSTR(targetURI));
-        
+
         Iterator<JsonNode> urisIter = queryField.get("args").get("uris").elements();
         Set<String> uris = new HashSet<>();
         urisIter.forEachRemaining(uri -> uris.add(uri.asText()));

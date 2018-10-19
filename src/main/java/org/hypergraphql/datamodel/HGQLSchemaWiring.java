@@ -35,6 +35,7 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+
 /**
  * Created by szymon on 24/08/2017.
  * <p>
@@ -49,7 +50,6 @@ public class HGQLSchemaWiring {
     private GraphQLSchema schema;
 
     public GraphQLSchema getSchema() {
-
         return schema;
     }
 
@@ -257,7 +257,6 @@ public class HGQLSchemaWiring {
 
     @SuppressWarnings("rawtypes")
 	private GraphQLFieldDefinition getBuiltQueryField(FieldOfTypeConfig field, DataFetcher fetcher) {
-
         List<GraphQLArgument> args = new ArrayList<>();
 
         if (this.hgqlSchema.getQueryFields().get(field.getName()).type().equals(HGQL_QUERY_GET_FIELD)) {

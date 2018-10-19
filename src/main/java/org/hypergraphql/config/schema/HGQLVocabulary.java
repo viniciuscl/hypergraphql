@@ -47,7 +47,6 @@ public class HGQLVocabulary {
 
     public static final String RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
-
     @SuppressWarnings("serial")
 	public static final Map<String, String> SCALAR_TYPES = Collections.unmodifiableMap(new HashMap<String, String>() {{
         put("String", HGQL_STRING);

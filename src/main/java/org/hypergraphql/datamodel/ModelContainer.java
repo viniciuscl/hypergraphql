@@ -14,6 +14,7 @@ import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.hypergraphql.config.schema.HGQLVocabulary;
 
+
 /**
  * Created by szymon on 22/08/2017.
  */

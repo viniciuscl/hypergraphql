@@ -109,7 +109,6 @@ public class SPARQLEndpointService extends SPARQLService {
 
     @Override
     public void setParameters(ServiceConfig serviceConfig) {
-
         super.setParameters(serviceConfig);
 
         this.id = serviceConfig.getId();
@@ -118,6 +117,5 @@ public class SPARQLEndpointService extends SPARQLService {
         this.graph = serviceConfig.getGraph();
         this.password = serviceConfig.getPassword();
         this.isD2RServer = serviceConfig.isD2RServer();
-
     }
 }

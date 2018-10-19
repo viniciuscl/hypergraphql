@@ -1,11 +1,9 @@
 package org.hypergraphql.datafetching.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.hypergraphql.config.system.ServiceConfig;
@@ -15,15 +13,18 @@ import org.hypergraphql.query.converters.HGraphQLConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Set;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 public class HGraphQLService extends Service {
 
     private String url;
-    private String user;
-    private String password;
+    /*private String user;
+    private String password;*/
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HGraphQLService.class);
 
@@ -77,9 +78,8 @@ public class HGraphQLService extends Service {
     public void setParameters(ServiceConfig serviceConfig) {
         this.id = serviceConfig.getId();
         this.url = serviceConfig.getUrl();
-        this.user = serviceConfig.getUser();
-        this.password = serviceConfig.getPassword();
-
+        /*this.user = serviceConfig.getUser();
+        this.password = serviceConfig.getPassword();*/
     }
 }
 
