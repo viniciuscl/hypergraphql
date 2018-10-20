@@ -50,8 +50,7 @@ public class HGQLConfigService {
             LOGGER.debug("Schema config path: " + fullSchemaPath);
 
             final Reader reader = selectAppropriateReader(fullSchemaPath, username, password, classpath);
-            final TypeDefinitionRegistry registry =
-                    schemaParser.parse(reader);
+            final TypeDefinitionRegistry registry = schemaParser.parse(reader);
 
             final HGQLSchemaWiring wiring = new HGQLSchemaWiring(registry, config.getName(), config.getServiceConfigs());
             config.setGraphQLSchema(wiring.getSchema());
@@ -67,7 +66,6 @@ public class HGQLConfigService {
             throws IOException, URISyntaxException {
 
         if(schemaPath.matches(S3_REGEX)) {
-
             LOGGER.debug("S3 schema");
             // create S3 bucket request, etc.
             return getReaderForS3(schemaPath, username, password);

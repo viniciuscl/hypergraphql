@@ -29,11 +29,6 @@ public class SPARQLServiceConverter {
         final String PATTERN = " OPTIONAL { %s } ";
         return String.format(PATTERN, sparqlPattern);
     }
-
-    /*private String fieldsSTR(String sparqlPattern) {
-        final String PATTERN = "%s";
-        return String.format(PATTERN, sparqlPattern);
-    }*/
     
     private String selectSubquerySTR(String id, String sparqlPattern, String limitOffset) {
         final String PATTERN = "{ SELECT " + varSTR(id) + " WHERE { %s } %s } ";
@@ -50,28 +45,22 @@ public class SPARQLServiceConverter {
         return (StringUtils.isEmpty(graphID)) ? whereSTR : String.format(PATTERN, graphID, whereSTR);
     }
 
+    private String valuesSTR(String id, String uri) {
+        final String PATTERN = "VALUES " + varSTR(id) + " { <%s> } ";
+        return String.format(PATTERN, uri);
+    }
+    
     private String valuesSTR(String id, Set<String> input) {
-        final String PATTERN = "VALUES " + varSTR(id) + " { %s } ";
+        final String PATTERN = "VALUES " + varSTR(id) + " { <%s> } ";
         Set<String> uris = new HashSet<>();
         input.forEach(uri -> uris.add(uriSTR(uri)));
         String urisConcat = String.join(" ", uris);
         return String.format(PATTERN, urisConcat);
     }
     
-    /*private String filterSTR(String id, Set<String> input) {
-        final String PATTERN = "FILTER (" + varSTR(id) + " IN ( %s )) ";
-        Set<String> uris = new HashSet<>();
-        input.forEach(uri -> uris.add(uriSTR(uri)));
-        String urisConcat = String.join(",", uris);
-        return String.format(PATTERN, urisConcat);
-    }*/
-
-    private String bindSTR(String id, Set<String> input) {
-        final String PATTERN = "BIND (%s AS " + varSTR(id) + ")";
-        Set<String> uris = new HashSet<>();
-        input.forEach(uri -> uris.add(uriSTR(uri)));
-        String urisConcat = String.join(" ", uris);
-        return String.format(PATTERN, urisConcat);
+    private String bindSTR(String id, String uri) {
+        final String PATTERN = "BIND ( <%s> AS " + varSTR(id) + " ) ";
+        return String.format(PATTERN, uri);
     }
 
     private String limitOffsetSTR(JsonNode jsonQuery) {
@@ -149,19 +138,17 @@ public class SPARQLServiceConverter {
         String nodeId = queryField.get("nodeId").asText();
         String selectTriple = tripleSTR(varSTR(nodeId), RDF_TYPE_URI, uriSTR(targetURI));
 
-        Iterator<JsonNode> urisIter = queryField.get("args").get("uris").elements();
-        Set<String> uris = new HashSet<>();
-        urisIter.forEachRemaining(uri -> uris.add(uri.asText()));
+        String uri = queryField.get("args").get("uri").asText();
         
         if(this.isD2RServer) {	        
-	        String bindSTR = bindSTR(nodeId, uris);
+	        String bindSTR = bindSTR(nodeId, uri);
 	
 	        JsonNode subfields = queryField.get("fields");
 	        String subQuery = getSubQueries(subfields);
 	
 	        return selectQuerySTR(bindSTR + selectTriple + subQuery, graphID);
         } else {           
-	        String valuesSTR = valuesSTR(nodeId, uris);
+	        String valuesSTR = valuesSTR(nodeId, uri);
 	
 	        JsonNode subfields = queryField.get("fields");
 	        String subQuery = getSubQueries(subfields);

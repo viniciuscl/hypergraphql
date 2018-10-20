@@ -75,7 +75,7 @@ class HGraphQLConverterTest {
 
         String testQuery = "" +
                 "{\n" +
-                "Company_GET_BY_ID(uris:[\"http://test1\", \"http://test2\", \"http://test3\"]) {\n" +
+                "Company_GET_BY_ID(uri:\"http://test1\") {\n" +
                 "  name\n" +
                 "  owner {\n" +
                 "    name \n" +
@@ -90,7 +90,8 @@ class HGraphQLConverterTest {
         assertTrue(test);
     }
 
-    @Test
+    @SuppressWarnings("serial")
+	@Test
     void rewritingValidityOfNonRootQuery() {
 
         String query = "" +
@@ -107,8 +108,8 @@ class HGraphQLConverterTest {
 
         Set<String> inputSet = new HashSet<String>() {{
             add("http://test1");
-            add("http://test2");
-            add("http://test3");
+            //add("http://test2");
+            //add("http://test3");
         }};
 
         boolean test = generateRewritingForNonRootReturnValidity(query, inputSet);

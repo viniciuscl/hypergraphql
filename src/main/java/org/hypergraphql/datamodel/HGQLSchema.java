@@ -139,14 +139,12 @@ public class HGQLSchema {
             rdfSchema.insertStringLiteralTriple(serviceURI, HGQL_HAS_ID, serviceId);
         });
 
-
         typeNames.forEach(typeName -> {
 
             String typeUri = schemaNamespace + typeName;
             rdfSchema.insertStringLiteralTriple(typeUri, HGQL_HAS_NAME, typeName);
             rdfSchema.insertObjectTriple(typeUri, HGQL_HREF, contextMap.get(typeName));
             rdfSchema.insertObjectTriple(typeUri, RDF_TYPE, HGQL_OBJECT_TYPE);
-
 
             TypeDefinition type = types.get(typeName);
 

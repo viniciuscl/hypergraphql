@@ -46,7 +46,7 @@ public class SPARQLEndpointExecution implements Callable<SPARQLExecutionResult> 
         this.markers = markers;
         this.sparqlEndpointService = sparqlEndpointService;
         this.schema = schema;
-        this.rootType=rootType;
+        this.rootType = rootType;
     }
 
     @Override

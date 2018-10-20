@@ -30,7 +30,6 @@ public class HGraphQLService extends Service {
 
     @Override
     public TreeExecutionResult executeQuery(JsonNode query, Set<String> input, Set<String> markers , String rootType, HGQLSchema schema) {
-
         Model model;
         Map<String, Set<String>> resultSet;
         String graphQlQuery = new HGraphQLConverter(schema).convertToHGraphQL(query, input, rootType);
@@ -46,13 +45,11 @@ public class HGraphQLService extends Service {
     }
 
     Model getModelFromRemote(String graphQlQuery) {
-
         ObjectMapper mapper = new ObjectMapper();
-
         ObjectNode bodyParam = mapper.createObjectNode();
 
         bodyParam.put("query", graphQlQuery);
-
+        
         Model model = ModelFactory.createDefaultModel();
 
         LOGGER.debug("\n" + url);

@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
-import graphql.schema.GraphQLList;
-import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
@@ -62,7 +60,7 @@ public class HGQLSchemaWiring {
         put("limit", new GraphQLArgument("limit", GraphQLInt));
         put("offset", new GraphQLArgument("offset", GraphQLInt));
         put("lang", new GraphQLArgument("lang", GraphQLString));
-        put("uris", new GraphQLArgument("uris", new GraphQLNonNull(new GraphQLList(GraphQLID))));
+        put("uri", new GraphQLArgument("uri", GraphQLString));
     }};
 
     @SuppressWarnings("serial")
@@ -73,12 +71,11 @@ public class HGQLSchemaWiring {
 
     @SuppressWarnings("serial")
 	private List<GraphQLArgument> getByIdQueryArgs = new ArrayList<GraphQLArgument>() {{
-        add(defaultArguments.get("uris"));
+        add(defaultArguments.get("uri"));
     }};
 
 
     public HGQLSchemaWiring(TypeDefinitionRegistry registry, String schemaName, List<ServiceConfig> serviceConfigs) {
-
         try {
             this.hgqlSchema = new HGQLSchema(registry, schemaName, generateServices(serviceConfigs));
             this.schema = generateSchema();
@@ -90,7 +87,6 @@ public class HGQLSchemaWiring {
 
     @SuppressWarnings("rawtypes")
 	private Map<String, Service> generateServices(List<ServiceConfig> serviceConfigs) {
-
         Map<String, Service> services = new HashMap<>();
 
         String packageName = "org.hypergraphql.datafetching.services";
@@ -118,7 +114,6 @@ public class HGQLSchemaWiring {
     }
 
     private GraphQLSchema generateSchema() {
-
         Set<String> typeNames = this.hgqlSchema.getTypes().keySet();
         GraphQLObjectType builtQueryType = registerGraphQLQueryType(this.hgqlSchema.getTypes().get("Query"));
         Set<GraphQLType> builtTypes = typeNames.stream()
@@ -129,7 +124,6 @@ public class HGQLSchemaWiring {
         return GraphQLSchema.newSchema()
                 .query(builtQueryType)
                 .build(builtTypes);
-
     }
 
 
@@ -155,11 +149,10 @@ public class HGQLSchemaWiring {
 
 
     private GraphQLObjectType registerGraphQLQueryType(TypeConfig type) {
-
         String typeName = type.getName();
         String description = "Top queryable predicates. " +
                 "_GET queries return all objects of a given type, possibly restricted by limit and offset values. " +
-                "_GET_BY_ID queries require a set of URIs to be specified.";
+                "_GET_BY_ID queries require a URI to be specified.";
 
         List<GraphQLFieldDefinition> builtFields;
 
@@ -179,7 +172,6 @@ public class HGQLSchemaWiring {
     }
 
     private GraphQLObjectType registerGraphQLType(TypeConfig type) {
-
         String typeName = type.getName();
         String uri = this.hgqlSchema.getTypes().get(typeName).getId();
         String description = "Instances of \"" + uri + "\".";
@@ -275,7 +267,7 @@ public class HGQLSchemaWiring {
         String serviceId = service.getId();
         String description = (queryFieldConfig.type().equals(HGQL_QUERY_GET_FIELD)) ?
                 "Get instances of " + field.getTargetName() + " (service: " + serviceId + ")" :
-                "Get instances of " + field.getTargetName() + " by URIs (service: " + serviceId + ")";
+                "Get instances of " + field.getTargetName() + " by URI (service: " + serviceId + ")";
 
         return newFieldDefinition()
                 .name(field.getName())

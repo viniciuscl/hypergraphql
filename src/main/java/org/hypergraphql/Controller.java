@@ -38,12 +38,8 @@ public class Controller {
     private static final String DEFAULT_MIME_TYPE = "RDF/XML";
     private static final String DEFAULT_ACCEPT_TYPE = "application/rdf+xml";
 
-<<<<<<< HEAD
     @SuppressWarnings("serial")
 	private static final Map<String, String> MIME_MAP = new HashMap<String, String>() {{
-=======
-    private static final Map<String, String> MIME_MAP = new HashMap<String, String>() {{
->>>>>>> 345b3f2bd2725e35cc0f6633e5595a4db2da561c
         put("application/json+rdf+xml", "RDF/XML");
         put("application/json+turtle", "TTL");
         put("application/json+ntriples", "N-TRIPLES");
@@ -57,12 +53,8 @@ public class Controller {
         put("text/n3", "N3");
     }};
 
-<<<<<<< HEAD
     @SuppressWarnings("serial")
 	private static final Map<String, Boolean> GRAPHQL_COMPATIBLE_TYPE = new HashMap<String, Boolean>() {{
-=======
-    private static final Map<String, Boolean> GRAPHQL_COMPATIBLE_TYPE = new HashMap<String, Boolean>() {{
->>>>>>> 345b3f2bd2725e35cc0f6633e5595a4db2da561c
         put("application/json+rdf+xml", true);
         put("application/json+turtle", true);
         put("application/json+ntriples", true);
@@ -76,13 +68,8 @@ public class Controller {
         put("text/n3", false);
     }};
 
-<<<<<<< HEAD
     @SuppressWarnings("unchecked")
 	public void start(HGQLConfig config) {
-=======
-    public void start(HGQLConfig config) {
->>>>>>> 345b3f2bd2725e35cc0f6633e5595a4db2da561c
-
         System.out.println("HGQL service name: " + config.getName());
         System.out.println("GraphQL server started at: http://localhost:" + config.getGraphqlConfig().port() + config.getGraphqlConfig().graphQLPath());
         System.out.println("GraphiQL UI available at: http://localhost:" + config.getGraphqlConfig().port() + config.getGraphqlConfig().graphiQLPath());

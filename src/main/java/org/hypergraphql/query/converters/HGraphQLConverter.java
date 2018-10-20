@@ -17,11 +17,10 @@ public class HGraphQLConverter {
     private HGQLSchema schema;
 
     public  HGraphQLConverter(HGQLSchema schema ) {
-
         this.schema = schema;
     }
+    
     private String urisArgSTR(Set<String> uris) {
-
         final String QUOTE = "\"%s\"";
         final String ARG = "(uris:[%s])";
 
