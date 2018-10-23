@@ -31,7 +31,6 @@ public class Application {
     private final static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(final String[] args) throws Exception {
-
         final String[] trimmedArgs = trimValues(args);
 
         final Options options = buildOptions();
@@ -50,17 +49,13 @@ public class Application {
         final boolean showBanner = !commandLine.hasOption("nobanner");
 
         if(commandLine.hasOption("config") || commandLine.hasOption("s3")) {
-
             configurations = getConfigurationFromArgs(service, commandLine);
         } else {
-
             final Map<String, String> properties;
             if(commandLine.hasOption("D")) {
                 final Properties props = commandLine.getOptionProperties("D");
-
                 properties = new HashMap<>();
                 props.forEach((k, v) -> properties.put((String)k, (String)v));
-
             } else {
                 properties = System.getenv();
             }
@@ -81,7 +76,6 @@ public class Application {
     }
 
     protected static void start(final List<HGQLConfig> configurations, final boolean showBanner) throws IOException {
-
         if(showBanner) {
             showBanner();
         }
@@ -176,7 +170,6 @@ public class Application {
             final CommandLine commandLine
     ) {
         if(commandLine.hasOption("s3")) {
-
             final String s3url = commandLine.getOptionValue("s3");
             final String accessKey = commandLine.getOptionValue('u');
             final String secretKey = commandLine.getOptionValue('p');

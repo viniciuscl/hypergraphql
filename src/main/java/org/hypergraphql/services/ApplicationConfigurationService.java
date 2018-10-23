@@ -30,7 +30,6 @@ public class ApplicationConfigurationService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ApplicationConfigurationService.class);
 
     public List<HGQLConfig> readConfigurationFromS3(final String configUri, final String username, final String password) {
-
         final URI uri;
         try {
             uri = new URI(configUri);
@@ -49,7 +48,6 @@ public class ApplicationConfigurationService {
     }
 
     public List<HGQLConfig> readConfigurationFromUrl(final String configUri, final String username, final String password) {
-
         final GetRequest getRequest;
         if(username == null && password == null) {
             getRequest = Unirest.get(configUri);
@@ -67,7 +65,6 @@ public class ApplicationConfigurationService {
     }
 
     public List<HGQLConfig> getConfigFiles(final String ... configPathStrings) {
-
         final List<HGQLConfig> configFiles = new ArrayList<>();
         if(configPathStrings != null) {
             Arrays.stream(configPathStrings).forEach(configPathString ->
@@ -77,7 +74,6 @@ public class ApplicationConfigurationService {
     }
 
     List<HGQLConfig> getConfigurationsFromFile(final String configPathString) {
-
         final File configPath = new File(configPathString); // it always has this
         final List<HGQLConfig> configurations = new ArrayList<>();
         try {
@@ -110,7 +106,6 @@ public class ApplicationConfigurationService {
     }
 
     private List<HGQLConfig> getConfigurationsFromClasspath(final String configPathString) {
-
         final String filename = getConfigFilename(configPathString);
 
         try(final InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
@@ -129,7 +124,6 @@ public class ApplicationConfigurationService {
     }
 
     private String getConfigFilename(final String configPathString) {
-
         final String fn = configPathString.contains("!")
                 ? configPathString.substring(configPathString.lastIndexOf("!") + 1)
                 : configPathString;
@@ -137,7 +131,6 @@ public class ApplicationConfigurationService {
     }
 
     public List<HGQLConfig> getConfigResources(final String ... resourcePaths) {
-
         final List<HGQLConfig> configurations = new ArrayList<>();
 
         if(resourcePaths != null) {

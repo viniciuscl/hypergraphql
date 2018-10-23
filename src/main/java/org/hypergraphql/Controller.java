@@ -90,7 +90,6 @@ public class Controller {
         // get method for accessing the GraphiQL UI
 
         hgqlService.get(config.getGraphqlConfig().graphiQLPath(), (req, res) -> {
-
             Map<String, String> model = new HashMap<>();
 
             model.put("template", String.valueOf(config.getGraphqlConfig().graphQLPath()));
@@ -104,7 +103,6 @@ public class Controller {
 
         // post method for accessing the GraphQL getService
         hgqlService.post(config.getGraphqlConfig().graphQLPath(), (req, res) -> {
-
             HGQLQueryService service = new HGQLQueryService(config);
 
             final String query = consumeRequest(req);
@@ -141,7 +139,6 @@ public class Controller {
         //Return the internal HGQL schema representation as rdf.
 
         hgqlService.get(config.getGraphqlConfig().graphQLPath() , (req, res) -> {
-
             String acceptType = req.headers("accept");
 
             Boolean isRdfContentType =
@@ -160,7 +157,6 @@ public class Controller {
     }
 
     private String consumeRequest(final Request request) throws IOException {
-
         if(request.contentType().equalsIgnoreCase("application-x/graphql")) {
             return consumeGraphQLBody(request.body());
         } else {
@@ -169,7 +165,6 @@ public class Controller {
     }
 
     private String consumeJSONBody(final String body) throws IOException {
-
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode requestObject = mapper.readTree(body);
         if(requestObject.get("query") == null) {
@@ -181,12 +176,10 @@ public class Controller {
     }
 
     private String consumeGraphQLBody(final String body) {
-
         return body;
     }
 
     public void stop() {
-
         if(hgqlService != null) {
             LOGGER.info("Attempting to shut down service at http://localhost:" + hgqlService.port() + "...");
             hgqlService.stop();
@@ -195,7 +188,6 @@ public class Controller {
     }
 
     private void setResponseHeaders(final Response response) {
-
         final List<String> headersList = Arrays.asList(
                 "Origin",
                 "X-Requested-With",

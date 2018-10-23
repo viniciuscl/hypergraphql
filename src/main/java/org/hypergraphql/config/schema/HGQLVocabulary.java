@@ -34,6 +34,7 @@ public class HGQLVocabulary {
     public static final String HGQL_QUERY_FIELD = HGQL_NAMESPACE + "QueryField";
     public static final String HGQL_QUERY_GET_FIELD = HGQL_NAMESPACE + "QueryGetField";
     public static final String HGQL_QUERY_GET_BY_ID_FIELD = HGQL_NAMESPACE + "QueryGetByIdField";
+    public static final String HGQL_QUERY_GET_BY_PROPERTY_FIELD = HGQL_NAMESPACE + "QueryGetByPropertyField";
     public static final String HGQL_HAS_FIELD = HGQL_NAMESPACE + "field";
     public static final String HGQL_SERVICE = HGQL_NAMESPACE + "Service";
     public static final String HGQL_HAS_SERVICE = HGQL_NAMESPACE + "service";

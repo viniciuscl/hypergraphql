@@ -56,7 +56,6 @@ public abstract class Service {
     public abstract void setParameters(ServiceConfig serviceConfig);
 
     public Model getModelFromResults(JsonNode query, QuerySolution results , HGQLSchema schema) {
-
         Model model = ModelFactory.createDefaultModel();
         if (query.isNull()) {
             return model;
@@ -82,7 +81,6 @@ public abstract class Service {
     }
 
     private Model buildModel(QuerySolution results, JsonNode currentNode , HGQLSchema schema) {
-
         Model model = ModelFactory.createDefaultModel();
 
         FieldConfig propertyString = schema.getFields().get(currentNode.get("name").asText());
@@ -104,7 +102,6 @@ public abstract class Service {
     }
 
     Map<String, Set<String>> getResultset(Model model, JsonNode query, Set<String> input, Set<String> markers, HGQLSchema schema) {
-
         Map<String, Set<String>> resultset = new HashMap<>();
         JsonNode node;
 
@@ -135,7 +132,6 @@ public abstract class Service {
     }
 
     private Set<String> findRootIdentifiers(Model model, TypeConfig targetName) {
-
         Set<String> identifiers = new HashSet<>();
         Model currentmodel = ModelFactory.createDefaultModel();
         Resource res = currentmodel.createResource(targetName.getId());
@@ -155,7 +151,6 @@ public abstract class Service {
     }
 
     private Set<String> findIdentifiers(Model model, Set<String> input, LinkedList<QueryNode> path) {
-
         Set<String> subjects;
         Set<String> objects;
         if (input == null) {
@@ -189,7 +184,6 @@ public abstract class Service {
     }
 
     private boolean hasMarkerLeaf(LinkedList<QueryNode> path, Set<String> markers) {
-
         for (String marker : markers) {
             if (path.getLast().getMarker().equals(marker)) {
                 return true;
@@ -205,7 +199,6 @@ public abstract class Service {
     }
 
     private void getQueryPathsRecursive(JsonNode query, Set<LinkedList<QueryNode>> paths, LinkedList<QueryNode> path, HGQLSchema schema) {
-
         Model model = ModelFactory.createDefaultModel();
 
         if (path == null) {
@@ -227,7 +220,6 @@ public abstract class Service {
     }
 
     private void getFieldPath(Set<LinkedList<QueryNode>> paths, LinkedList<QueryNode> path, HGQLSchema schema, Model model, JsonNode currentNode) {
-
         LinkedList<QueryNode> newPath = new LinkedList<>(path);
         String nodeMarker = currentNode.get("nodeId").asText();
         String nodeName = currentNode.get("name").asText();

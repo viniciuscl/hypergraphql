@@ -31,12 +31,10 @@ public class HGQLQueryService {
     public HGQLQueryService(HGQLConfig config) {
         this.hgqlSchema = config.getHgqlSchema();
         this.schema = config.getSchema();
-
         this.graphql = GraphQL.newGraphQL(config.getSchema()).build();
     }
 
     public Map<String, Object> results(String query, String acceptType) {
-
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<Object, Object> extensions = new HashMap<>();

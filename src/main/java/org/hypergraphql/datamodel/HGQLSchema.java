@@ -1,35 +1,5 @@
 package org.hypergraphql.datamodel;
 
-import graphql.language.FieldDefinition;
-import graphql.language.ListType;
-import graphql.language.Node;
-import graphql.language.NonNullType;
-import graphql.language.StringValue;
-import graphql.language.Type;
-import graphql.language.TypeDefinition;
-import graphql.language.TypeName;
-import graphql.schema.GraphQLList;
-import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLOutputType;
-import graphql.schema.GraphQLTypeReference;
-import graphql.schema.idl.TypeDefinitionRegistry;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.hypergraphql.config.schema.FieldConfig;
-import org.hypergraphql.config.schema.FieldOfTypeConfig;
-import org.hypergraphql.config.schema.QueryFieldConfig;
-import org.hypergraphql.config.schema.TypeConfig;
-import org.hypergraphql.datafetching.services.Service;
-import org.hypergraphql.exception.HGQLConfigurationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_Boolean;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_FIELD;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_HAS_FIELD;
@@ -46,6 +16,7 @@ import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_OF_TYPE;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_OUTPUT_TYPE;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_FIELD;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_GET_BY_ID_FIELD;
+import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_GET_BY_PROPERTY_FIELD;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_GET_FIELD;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_TYPE;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_SCALAR_TYPE;
@@ -57,6 +28,37 @@ import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_STRING;
 import static org.hypergraphql.config.schema.HGQLVocabulary.RDF_TYPE;
 import static org.hypergraphql.config.schema.HGQLVocabulary.SCALAR_TYPES;
 import static org.hypergraphql.config.schema.HGQLVocabulary.SCALAR_TYPES_TO_GRAPHQL_OUTPUT;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.hypergraphql.config.schema.FieldConfig;
+import org.hypergraphql.config.schema.FieldOfTypeConfig;
+import org.hypergraphql.config.schema.QueryFieldConfig;
+import org.hypergraphql.config.schema.TypeConfig;
+import org.hypergraphql.datafetching.services.Service;
+import org.hypergraphql.exception.HGQLConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import graphql.language.FieldDefinition;
+import graphql.language.ListType;
+import graphql.language.Node;
+import graphql.language.NonNullType;
+import graphql.language.StringValue;
+import graphql.language.Type;
+import graphql.language.TypeDefinition;
+import graphql.language.TypeName;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNonNull;
+import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLTypeReference;
+import graphql.schema.idl.TypeDefinitionRegistry;
 
 
 public class HGQLSchema {
@@ -140,7 +142,6 @@ public class HGQLSchema {
         });
 
         typeNames.forEach(typeName -> {
-
             String typeUri = schemaNamespace + typeName;
             rdfSchema.insertStringLiteralTriple(typeUri, HGQL_HAS_NAME, typeName);
             rdfSchema.insertObjectTriple(typeUri, HGQL_HREF, contextMap.get(typeName));
@@ -152,16 +153,27 @@ public class HGQLSchema {
                 if (dir.getName().equals("service")) {
                     String getQueryUri = typeUri + "_GET";
                     String getByIdQueryUri = typeUri + "_GET_BY_ID";
-
+                    String getByProperty = typeUri + "_GET_BY_PROPERTY";
+                    
+                    /*LOGGER.info(getQueryUri);
+                    LOGGER.info(getByIdQueryUri);
+                    LOGGER.info(getByProperty);*/
+                    
                     rdfSchema.insertObjectTriple(getQueryUri, RDF_TYPE, HGQL_QUERY_FIELD);
                     rdfSchema.insertObjectTriple(getQueryUri, RDF_TYPE, HGQL_QUERY_GET_FIELD);
                     rdfSchema.insertObjectTriple(schemaNamespace + "query", HGQL_HAS_FIELD, getQueryUri);
                     rdfSchema.insertStringLiteralTriple(getQueryUri, HGQL_HAS_NAME, typeName + "_GET");
+                    
                     rdfSchema.insertObjectTriple(getByIdQueryUri, RDF_TYPE, HGQL_QUERY_FIELD);
                     rdfSchema.insertObjectTriple(getByIdQueryUri, RDF_TYPE, HGQL_QUERY_GET_BY_ID_FIELD);
                     rdfSchema.insertObjectTriple(schemaNamespace + "query", HGQL_HAS_FIELD, getByIdQueryUri);
                     rdfSchema.insertStringLiteralTriple(getByIdQueryUri, HGQL_HAS_NAME, typeName + "_GET_BY_ID");
-
+                    
+                    rdfSchema.insertObjectTriple(getByProperty, RDF_TYPE, HGQL_QUERY_FIELD);
+                    rdfSchema.insertObjectTriple(getByProperty, RDF_TYPE, HGQL_QUERY_GET_BY_PROPERTY_FIELD);
+                    rdfSchema.insertObjectTriple(schemaNamespace + "query", HGQL_HAS_FIELD, getByProperty);
+                    rdfSchema.insertStringLiteralTriple(getByProperty, HGQL_HAS_NAME, typeName + "_GET_BY_PROPERTY");
+                    
                     String outputListTypeURI = schemaNamespace + UUID.randomUUID();
 
                     rdfSchema.insertObjectTriple(outputListTypeURI, RDF_TYPE, HGQL_LIST_TYPE);
@@ -169,11 +181,14 @@ public class HGQLSchema {
 
                     rdfSchema.insertObjectTriple(getQueryUri, HGQL_OUTPUT_TYPE, outputListTypeURI);
                     rdfSchema.insertObjectTriple(getByIdQueryUri, HGQL_OUTPUT_TYPE, outputListTypeURI);
+                    rdfSchema.insertObjectTriple(getByProperty, HGQL_OUTPUT_TYPE, outputListTypeURI);
+                    
                     String serviceId = ((StringValue) dir.getArgument("id").getValue()).getValue();
 
                     String serviceURI = HGQL_SERVICE_NAMESPACE + serviceId;
                     rdfSchema.insertObjectTriple(getQueryUri, HGQL_HAS_SERVICE, serviceURI);
                     rdfSchema.insertObjectTriple(getByIdQueryUri, HGQL_HAS_SERVICE, serviceURI);
+                    rdfSchema.insertObjectTriple(getByProperty, HGQL_HAS_SERVICE, serviceURI);
                 }
             });
 
@@ -197,13 +212,10 @@ public class HGQLSchema {
 
                     String outputTypeUri = getOutputType(field.getType());
                     rdfSchema.insertObjectTriple(fieldURI, HGQL_OUTPUT_TYPE, outputTypeUri);
-
                 }
             });
         });
-
         generateConfigs(services);
-
     }
 
     private void generateConfigs(Map<String, Service> services) {
@@ -214,7 +226,6 @@ public class HGQLSchema {
         List<RDFNode> fieldNodes = rdfSchema.getSubjectsOfObjectProperty(RDF_TYPE, HGQL_FIELD);
 
         fieldNodes.forEach(rdfNode -> {
-
             String name = rdfSchema.getValueOfDataProperty(rdfNode, HGQL_HAS_NAME);
             RDFNode href = rdfSchema.getValueOfObjectProperty(rdfNode, HGQL_HREF);
             //RDFNode serviceNode = rdfSchema.getValueOfObjectProperty(rdfNode, HGQL_HAS_SERVICE);
@@ -226,16 +237,26 @@ public class HGQLSchema {
 
         List<RDFNode> queryFieldNodes = rdfSchema.getSubjectsOfObjectProperty(RDF_TYPE, HGQL_QUERY_FIELD);
         List<RDFNode> queryGetFieldNodes = rdfSchema.getSubjectsOfObjectProperty(RDF_TYPE, HGQL_QUERY_GET_FIELD);
+        List<RDFNode> queryGetByIdFieldNodes = rdfSchema.getSubjectsOfObjectProperty(RDF_TYPE, HGQL_QUERY_GET_BY_ID_FIELD);
 
         queryFieldNodes.forEach(node -> {
-
             String name = rdfSchema.getValueOfDataProperty(node, HGQL_HAS_NAME);
             RDFNode serviceNode = rdfSchema.getValueOfObjectProperty(node, HGQL_HAS_SERVICE);
             String serviceId = rdfSchema.getValueOfDataProperty(serviceNode, HGQL_HAS_ID);
 
-            String type = (queryGetFieldNodes.contains(node)) ? HGQL_QUERY_GET_FIELD : HGQL_QUERY_GET_BY_ID_FIELD;
+            //String type = (queryGetFieldNodes.contains(node)) ? HGQL_QUERY_GET_FIELD : HGQL_QUERY_GET_BY_ID_FIELD;
+            String type = "";
+            if(queryGetFieldNodes.contains(node)) {
+            	type = HGQL_QUERY_GET_FIELD;
+            } else if(queryGetByIdFieldNodes.contains(node)) {
+            	type = HGQL_QUERY_GET_BY_ID_FIELD;
+            } else {
+            	type = HGQL_QUERY_GET_BY_PROPERTY_FIELD;
+            }
+            
             QueryFieldConfig fieldConfig = new QueryFieldConfig(services.get(serviceId), type);
             queryFields.put(name, fieldConfig);
+            //LOGGER.info(type + " - " + name);
         });
 
         List<RDFNode> typeNodes = rdfSchema.getSubjectsOfObjectProperty(RDF_TYPE, HGQL_OBJECT_TYPE);
@@ -250,7 +271,6 @@ public class HGQLSchema {
             Map<String, FieldOfTypeConfig> fields = new HashMap<>();
 
             fieldsOfType.forEach(field -> {
-
                 String fieldOfTypeName = rdfSchema.getValueOfDataProperty(field, HGQL_HAS_NAME);
                 RDFNode href = rdfSchema.getValueOfObjectProperty(field, HGQL_HREF);
                 String hrefURI = (href!=null) ? href.asResource().getURI() : null;
@@ -269,7 +289,6 @@ public class HGQLSchema {
             TypeConfig typeConfig = new TypeConfig(typeName, typeURI, fields);
 
             this.types.put(typeName, typeConfig);
-
         });
     }
 
@@ -319,7 +338,6 @@ public class HGQLSchema {
 
 
     private String getOutputType(Type type) {
-
         if (type.getClass() == TypeName.class) {
             TypeName castType = (TypeName) type;
             String name = castType.getName();

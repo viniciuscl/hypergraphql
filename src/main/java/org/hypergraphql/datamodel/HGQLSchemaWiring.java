@@ -6,6 +6,7 @@ import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_GET_FIELD;
+import static org.hypergraphql.config.schema.HGQLVocabulary.HGQL_QUERY_GET_BY_ID_FIELD;
 import static org.hypergraphql.config.schema.HGQLVocabulary.SCALAR_TYPES;
 
 import java.lang.reflect.InvocationTargetException;
@@ -61,6 +62,8 @@ public class HGQLSchemaWiring {
         put("offset", new GraphQLArgument("offset", GraphQLInt));
         put("lang", new GraphQLArgument("lang", GraphQLString));
         put("uri", new GraphQLArgument("uri", GraphQLString));
+        put("propertyURI", new GraphQLArgument("propertyURI", GraphQLString));
+        put("propertyValue", new GraphQLArgument("propertyValue", GraphQLString));
     }};
 
     @SuppressWarnings("serial")
@@ -74,12 +77,16 @@ public class HGQLSchemaWiring {
         add(defaultArguments.get("uri"));
     }};
 
+    @SuppressWarnings("serial")
+	private List<GraphQLArgument> getByPropertyQueryArgs = new ArrayList<GraphQLArgument>() {{
+        add(defaultArguments.get("propertyURI"));
+        add(defaultArguments.get("propertyValue"));
+    }};
 
     public HGQLSchemaWiring(TypeDefinitionRegistry registry, String schemaName, List<ServiceConfig> serviceConfigs) {
         try {
             this.hgqlSchema = new HGQLSchema(registry, schemaName, generateServices(serviceConfigs));
             this.schema = generateSchema();
-
         } catch (Exception e) {
             throw new HGQLConfigurationException("Unable to perform schema wiring", e);
         }
@@ -253,8 +260,10 @@ public class HGQLSchemaWiring {
 
         if (this.hgqlSchema.getQueryFields().get(field.getName()).type().equals(HGQL_QUERY_GET_FIELD)) {
             args.addAll(getQueryArgs);
+        } else if(this.hgqlSchema.getQueryFields().get(field.getName()).type().equals(HGQL_QUERY_GET_BY_ID_FIELD)) {
+        	args.addAll(getByIdQueryArgs);      	
         } else {
-            args.addAll(getByIdQueryArgs);
+            args.addAll(getByPropertyQueryArgs);
         }
 
         final QueryFieldConfig queryFieldConfig = this.hgqlSchema.getQueryFields().get(field.getName());
@@ -265,10 +274,19 @@ public class HGQLSchemaWiring {
                     + queryFieldConfig.type() + "'] not specified (null)");
         }
         String serviceId = service.getId();
-        String description = (queryFieldConfig.type().equals(HGQL_QUERY_GET_FIELD)) ?
+        /*String description = (queryFieldConfig.type().equals(HGQL_QUERY_GET_FIELD)) ?
                 "Get instances of " + field.getTargetName() + " (service: " + serviceId + ")" :
-                "Get instances of " + field.getTargetName() + " by URI (service: " + serviceId + ")";
-
+                "Get instances of " + field.getTargetName() + " by URI (service: " + serviceId + ")";*/
+        
+        String description = "";
+        if(queryFieldConfig.type().equals(HGQL_QUERY_GET_FIELD)) {
+        	description = "Get instances of " + field.getTargetName() + " (service: " + serviceId + ")";
+        } else if(queryFieldConfig.type().equals(HGQL_QUERY_GET_BY_ID_FIELD)) {
+        	description = "Get instances of " + field.getTargetName() + " by URI (service: " + serviceId + ")";
+        } else {
+        	description = "Get instances of " + field.getTargetName() + " by a specific property (service: " + serviceId + ")";
+        }
+             
         return newFieldDefinition()
                 .name(field.getName())
                 .argument(args)
