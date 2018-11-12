@@ -7,7 +7,6 @@ import java.util.Set;
 
 public class TreeExecutionResult {
 
-
     private Model model;
 
     private Map<String, Set<String>> resultSet;

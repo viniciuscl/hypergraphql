@@ -11,7 +11,6 @@ public class FetchingExecution implements Callable<Model> {
     private ExecutionTreeNode node;
 
     public FetchingExecution(Set<String> inputValues, ExecutionTreeNode node) {
-
         this.inputValues = inputValues;
         this.node = node;
     }
